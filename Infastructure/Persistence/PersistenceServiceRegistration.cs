@@ -15,10 +15,9 @@ namespace CleanArchCQRSMediatorAPI.Persistence
     {
         public static IServiceCollection ConfigurePersistenceService(this IServiceCollection services, IConfiguration configuration)
         {
-            services
-                .AddDbContext<LibraryDbContext>(opt => opt.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
+            services.AddDbContext<LibraryDbContext>(opt => opt.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
-            services.AddScoped(typeof(IUnitOfWork), typeof(UnitOfWork<>));
+            services.AddScoped<IUnitOfWork, UnitOfWork<LibraryDbContext>>();
             return services;
         }
     }

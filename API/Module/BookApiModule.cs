@@ -8,6 +8,7 @@ namespace CleanArchCQRSMediatorAPI.API.Module
     using CleanArchCQRSMediatorAPI.Application.Features.Books.Commands;
     using CleanArchCQRSMediatorAPI.Application.Features.Books.Queries;
     using CleanArchCQRSMediatorAPI.Application.Shared;
+    using CleanArchCQRSMediatorAPI.Identity.Constants;
     using MediatR;
     using Microsoft.AspNetCore.Mvc;
 
@@ -15,8 +16,8 @@ namespace CleanArchCQRSMediatorAPI.API.Module
     {
         void IApiModule.MapEndpoint(WebApplication app)
         {
-            var books = app.MapGroup("/books").RequireAuthorization("management-staff-only");
-            app.MapGet("/books", GetAllBooks).RequireAuthorization("get-all-books");
+            var books = app.MapGroup("/books")/*.RequireAuthorization(AuthorizationConstants.AuthorizationPolicies.ManagementStaffOnly)*/;
+            app.MapGet("/books", GetAllBooks)/*.RequireAuthorization(AuthorizationConstants.AuthorizationPolicies.GetAllBooks)*/;
             books.MapPost("/", AddBook);
             books.MapDelete("/", RemoveBook);
             books.MapGet("/{id}", GetBookById);

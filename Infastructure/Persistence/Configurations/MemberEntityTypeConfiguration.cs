@@ -13,10 +13,11 @@ namespace CleanArchCQRSMediatorAPI.Persistence.Configurations
         {
             builder.ToTable("Member");
             builder.HasKey(m => m.Id);
+            builder.Property(m => m.Id).HasDefaultValueSql("gen_random_uuid()");
             builder.Property(m => m.Username).IsRequired().HasMaxLength(256);
             builder.Property(m => m.MemberType).IsRequired();
-            builder.Property<DateTime>("CreatedAt");
-            builder.Property<DateTime>("UpdatedAt");
+            builder.Property<DateTime>("CreatedAt").HasDefaultValueSql("NOW()");
+            builder.Property<DateTime>("UpdatedAt").HasDefaultValueSql("NOW()").ValueGeneratedOnAddOrUpdate();
         }
     }
 }

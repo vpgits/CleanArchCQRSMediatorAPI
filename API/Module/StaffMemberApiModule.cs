@@ -10,6 +10,7 @@ namespace CleanArchCQRSMediatorAPI.API.Module
     using CleanArchCQRSMediatorAPI.Application.Features.StaffMembers.Commands;
     using CleanArchCQRSMediatorAPI.Application.Features.StaffMembers.Queries;
     using CleanArchCQRSMediatorAPI.Application.Shared;
+    using CleanArchCQRSMediatorAPI.Identity.Constants;
     using MediatR;
     using Microsoft.AspNetCore.Mvc;
 
@@ -17,11 +18,11 @@ namespace CleanArchCQRSMediatorAPI.API.Module
     {
         void IApiModule.MapEndpoint(WebApplication app)
         {
-            var staffMembers = app.MapGroup("/staffMembers").RequireAuthorization("is-staff");
+            var staffMembers = app.MapGroup("/staffMembers")/*.RequireAuthorization(AuthorizationConstants.AuthorizationPolicies.IsStaff)*/;
             staffMembers.MapGet("/{id}", GetStaffMemberById);
 
             // staffMembers.MapPost("/", CreateStaffMember);
-            staffMembers.MapGet("/", GetAllStaffMembers).RequireAuthorization("management-staff-only");
+            staffMembers.MapGet("/", GetAllStaffMembers)/*.RequireAuthorization(AuthorizationConstants.AuthorizationPolicies.ManagementStaffOnly)*/;
             staffMembers.MapPut("/{id}", UpdateStaffMember);
             staffMembers.MapDelete("/{id}", DeleteStaffMember);
             staffMembers.MapGet("/allMembers", GetAllLibraryMembers);

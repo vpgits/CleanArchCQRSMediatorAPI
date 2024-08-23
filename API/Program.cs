@@ -7,6 +7,7 @@ using CleanArchCQRSMediatorAPI.API.Exceptions;
 using CleanArchCQRSMediatorAPI.API.Extensions;
 using CleanArchCQRSMediatorAPI.Application;
 using CleanArchCQRSMediatorAPI.Identity;
+using CleanArchCQRSMediatorAPI.Identity.Extensions;
 using CleanArchCQRSMediatorAPI.Persistence;
 using CleanArchCQRSMediatorAPI.Persistence.Extensions;
 using CleanArchCQRSMediatorAPI.Utility;
@@ -69,8 +70,9 @@ if (app.Environment.IsDevelopment())
     app.UseDeveloperExceptionPage();
 }
 
-// app.MigrateAuthDbContext();
-// app.MigrateLibraryDbContext();
+app.MigrateAuthDbContext();
+app.MigrateLibraryDbContext();
+
 app.UseAuthentication();
 app.UseAuthorization();
 

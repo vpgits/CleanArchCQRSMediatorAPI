@@ -19,6 +19,8 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.0" />
+    <PackageReference Include="Npgsql" Version="8.0.3" />
+    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.4" />
     <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -27,5 +29,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Core\Application\CleanArchCQRSMediatorAPI.Application.csproj" />
+    <ProjectReference Include="..\..\Core\Domain\CleanArchCQRSMediatorAPI.Domain.csproj" />
   </ItemGroup>
 </Project>

@@ -10,6 +10,7 @@ namespace CleanArchCQRSMediatorAPI.API.Module
     using CleanArchCQRSMediatorAPI.Application.Features.LibraryMembers.Queries;
     using CleanArchCQRSMediatorAPI.Application.Features.StaffMembers.Queries;
     using CleanArchCQRSMediatorAPI.Application.Shared;
+    using CleanArchCQRSMediatorAPI.Identity.Constants;
     using MediatR;
     using Microsoft.AspNetCore.Mvc;
 
@@ -17,10 +18,10 @@ namespace CleanArchCQRSMediatorAPI.API.Module
     {
         void IApiModule.MapEndpoint(WebApplication app)
         {
-            var libraryMembers = app.MapGroup("/libraryMembers").RequireAuthorization("library-member-only");
+            var libraryMembers = app.MapGroup("/libraryMembers")/*.RequireAuthorization(AuthorizationConstants.AuthorizationPolicies.LibraryMemberOnly)*/;
             libraryMembers.MapGet("/{id}", GetLibraryMemberById);
 
-            // libraryMembers.MapPost("/", CreateLibraryMember);
+            libraryMembers.MapPost("/", CreateLibraryMember);
             libraryMembers.MapGet("/", GetAllLibraryMembers);
             libraryMembers.MapPut("/{id}", UpdateLibraryMember);
             libraryMembers.MapDelete("/{id}", DeleteLibraryMember);

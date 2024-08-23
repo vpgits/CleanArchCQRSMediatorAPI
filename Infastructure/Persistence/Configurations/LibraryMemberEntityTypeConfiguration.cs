@@ -14,9 +14,10 @@ namespace CleanArchCQRSMediatorAPI.Persistence.Configurations
         {
             builder.ToTable("Member");
             builder.HasBaseType<Member>();
+            builder.Property(m => m.Id).HasDefaultValueSql("gen_random_uuid()");
             builder.HasMany(m => m.BorrowedBooks).WithOne(b => b.BorrowedMember).HasForeignKey(b => b.BorrowedMemberId).OnDelete(DeleteBehavior.Cascade);
-            builder.Property<DateTime>("CreatedAt");
-            builder.Property<DateTime>("UpdatedAt");
+            builder.Property<DateTime>("CreatedAt").HasDefaultValueSql("NOW()");
+            builder.Property<DateTime>("UpdatedAt").HasDefaultValueSql("NOW()").ValueGeneratedOnAddOrUpdate();
         }
     }
 }

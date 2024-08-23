@@ -32,7 +32,7 @@ namespace CleanArchCQRSMediatorAPI.Application.Features.StaffMembers.Handlers
                 staffMemberDto.CreatedAt = this.repository.GetCreatedAtShadowProperty(staffMember);
                 staffMemberDto.UpdatedAt = this.repository.GetUpdatedAtShadowProperty(staffMember);
                 return staffMemberDto;
-            });
+            }).ToList();
 
             return (List<StaffMemberDto>)staffMemberDtos;
         }

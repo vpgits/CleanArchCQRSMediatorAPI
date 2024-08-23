@@ -18,7 +18,7 @@ namespace CleanArchCQRSMediatorAPI.API.Extensions
         {
             builder.UseSerilog((context, services, configuration) =>
             {
-                var httpAccessor = context.Configuration.Get<HttpContextAccessor>() !;
+                var httpAccessor = context.Configuration.Get<HttpContextAccessor>()!;
                 configuration
                 .ReadFrom.Configuration(context.Configuration)
                 .MinimumLevel.Information()
@@ -47,10 +47,10 @@ namespace CleanArchCQRSMediatorAPI.API.Extensions
 
                     // configuration.WriteTo.ApplicationInsights(services.GetRequiredService<TelemetryConfiguration>(), TelemetryConverter.Traces);
                 }
-                else
-                {
-                    configuration.WriteTo.Console(new ElasticsearchJsonFormatter());
-                }
+                // else
+                // {
+                //     configuration.WriteTo.Console(new ElasticsearchJsonFormatter());
+                // }
             });
             return builder;
         }

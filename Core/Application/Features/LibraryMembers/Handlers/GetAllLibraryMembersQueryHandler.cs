@@ -33,7 +33,7 @@ namespace CleanArchCQRSMediatorAPI.Application.Features.LibraryMembers.Handlers
                 libraryMemberDto.CreatedAt = this.repository.GetCreatedAtShadowProperty(libraryMember);
                 libraryMemberDto.UpdatedAt = this.repository.GetUpdatedAtShadowProperty(libraryMember);
                 return libraryMemberDto;
-            });
+            }).ToList();
 
             return (List<LibraryMemberDto>)libraryMemberDtos;
         }

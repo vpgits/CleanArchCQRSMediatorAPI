@@ -9,13 +9,15 @@ EXPOSE 8081
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["CleanArchCQRSMediatorAPI.API/CleanArchCQRSMediatorAPI.API.csproj", "CleanArchCQRSMediatorAPI.API/"]
-COPY ["CleanArchCQRSMediatorAPI.Application/CleanArchCQRSMediatorAPI.Application.csproj", "CleanArchCQRSMediatorAPI.Application/"]
-COPY ["CleanArchCQRSMediatorAPI.Domain/CleanArchCQRSMediatorAPI.Domain.csproj", "CleanArchCQRSMediatorAPI.Domain/"]
-COPY ["CleanArchCQRSMediatorAPI.Persistence/CleanArchCQRSMediatorAPI.Persistence.csproj", "CleanArchCQRSMediatorAPI.Persistence/"]
-RUN dotnet restore "./CleanArchCQRSMediatorAPI.API/CleanArchCQRSMediatorAPI.API.csproj"
+COPY ["API/CleanArchCQRSMediatorAPI.API.csproj", "API/"]
+COPY ["Core/Application/CleanArchCQRSMediatorAPI.Application.csproj", "Core/Application/"]
+COPY ["Core/Domain/CleanArchCQRSMediatorAPI.Domain.csproj", "Core/Domain/"]
+COPY ["Infastructure/Identity/CleanArchCQRSMediatorAPI.Identity.csproj", "Infastructure/Identity/"]
+COPY ["Infastructure/Persistence/CleanArchCQRSMediatorAPI.Persistence.csproj", "Infastructure/Persistence/"]
+COPY ["Infastructure/Utility/CleanArchCQRSMediatorAPI.Utility.csproj", "Infastructure/Utility/"]
+RUN dotnet restore "./API/CleanArchCQRSMediatorAPI.API.csproj"
 COPY . .
-WORKDIR "/src/CleanArchCQRSMediatorAPI.API"
+WORKDIR "/src/API"
 RUN dotnet build "./CleanArchCQRSMediatorAPI.API.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 FROM build AS publish

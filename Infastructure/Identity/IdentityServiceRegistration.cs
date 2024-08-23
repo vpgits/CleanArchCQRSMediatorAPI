@@ -1,4 +1,4 @@
-﻿// <copyright file="IdentityServiceRegistration.cs" company="vpgits">
+// <copyright file="IdentityServiceRegistration.cs" company="vpgits">
 // Copyright (c) vpgits. All rights reserved.
 // </copyright>
 
@@ -7,6 +7,7 @@ namespace CleanArchCQRSMediatorAPI.Identity
     using System.Security.Claims;
     using System.Text;
     using CleanArchCQRSMediatorAPI.Application.Abstractions.Identity;
+    using CleanArchCQRSMediatorAPI.Identity.Constants;
     using CleanArchCQRSMediatorAPI.Identity.Contexts;
     using CleanArchCQRSMediatorAPI.Identity.Services;
     using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -21,11 +22,11 @@ namespace CleanArchCQRSMediatorAPI.Identity
         public static IServiceCollection RegisterIdentityService(this IServiceCollection services, IConfiguration configuration)
         {
             services
-                .AddDbContext<AuthDbContext>(opt => opt.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
+                 .AddDbContext<AuthDbContext>(opt => opt.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
             services.AddTransient<IUserService, UserService>();
             services.AddIdentity<IdentityUser, IdentityRole>()
-                .AddEntityFrameworkStores<AuthDbContext>()
-            .AddDefaultTokenProviders();
+    .AddEntityFrameworkStores<AuthDbContext>()
+.AddDefaultTokenProviders();
             services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -36,36 +37,44 @@ namespace CleanArchCQRSMediatorAPI.Identity
                 {
                     ValidateIssuer = false,
                     ValidateAudience = false,
-                    ValidateLifetime = true,
+                    ValidateLifetime = false,
                     ValidateIssuerSigningKey = true,
-                    ValidIssuer = configuration["Jwt:Issuer"] !,
-                    ValidAudience = configuration["Jwt:Audience"] !,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Key"] !)),
+                    ValidIssuer = configuration["Jwt:Issuer"]!,
+                    ValidAudience = configuration["Jwt:Audience"]!,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Key"]!)),
                 };
             });
             services.AddAuthorization(options =>
             {
-                options.AddPolicy("management-staff-only", policy =>
+                options.AddPolicy(AuthorizationConstants.AuthorizationPolicies.ManagementStaffOnly, policy =>
                 {
-                    policy.RequireRole("management-staff");
+                    policy.RequireRole(AuthorizationConstants.AuthorizationRoles.ManagementStaff);
                 });
-                options.AddPolicy("minor-staff-only", policy =>
+
+                options.AddPolicy(AuthorizationConstants.AuthorizationPolicies.MinorStaffOnly, policy =>
                 {
-                    policy.RequireRole("minor-staff");
+                    policy.RequireRole(AuthorizationConstants.AuthorizationRoles.MinorStaff);
                 });
-                options.AddPolicy("library-member-only", policy =>
+
+                options.AddPolicy(AuthorizationConstants.AuthorizationPolicies.LibraryMemberOnly, policy =>
                 {
-                    policy.RequireRole("library-member");
+                    policy.RequireRole(AuthorizationConstants.AuthorizationRoles.LibraryMember);
                 });
-                options.AddPolicy("get-all-books", policy =>
+
+                options.AddPolicy(AuthorizationConstants.AuthorizationPolicies.GetAllBooks, policy =>
                 {
                     policy.RequireAssertion(ctx =>
-                        ctx.User.HasClaim(claim => claim.Type == ClaimTypes.Role && (claim.Value == "management-staff" || claim.Value == "library-member")));
+                        ctx.User.HasClaim(claim => claim.Type == ClaimTypes.Role &&
+                        (claim.Value == AuthorizationConstants.AuthorizationRoles.ManagementStaff ||
+                         claim.Value == AuthorizationConstants.AuthorizationRoles.LibraryMember)));
                 });
-                options.AddPolicy("is-staff", policy =>
+
+                options.AddPolicy(AuthorizationConstants.AuthorizationPolicies.IsStaff, policy =>
                 {
                     policy.RequireAssertion(ctx =>
-                        ctx.User.HasClaim(claim => claim.Type == ClaimTypes.Role && (claim.Value == "management-staff" || claim.Value == "minor-staff")));
+                        ctx.User.HasClaim(claim => claim.Type == ClaimTypes.Role &&
+                        (claim.Value == AuthorizationConstants.AuthorizationRoles.ManagementStaff ||
+                         claim.Value == AuthorizationConstants.AuthorizationRoles.MinorStaff)));
                 });
             });
             return services;

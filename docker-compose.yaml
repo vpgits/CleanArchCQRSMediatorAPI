@@ -1,45 +1,86 @@
 services:
-  CleanArchCQRSMediatorAPI.elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:8.14.3
-    environment:
-      - node.name=elasticsearch
-      - cluster.name=elasticsearch-cluster
-      - discovery.type=single-node
-      - xpack.security.http.ssl.enabled=false
-      - xpack.license.self_generated.type=basic
-      - ELASTIC_PASSWORD=Strong_password123!
+  # cleanarchcqrsmediatorapi.elasticsearch:
+  #   image: docker.elastic.co/elasticsearch/elasticsearch:8.14.3
+  #   environment:
+  #     - node.name=elasticsearch
+  #     - cluster.name=elasticsearch-cluster
+  #     - discovery.type=single-node
+  #     - xpack.security.http.ssl.enabled=false
+  #     - xpack.license.self_generated.type=basic
+  #     - ELASTIC_PASSWORD=Strong_password123!
+  #   networks:
+  #     - cleanarchcqrsmediatorapi-net
+  #   volumes:
+  #     - cleanarchcqrsmediatorapi.elasticsearch_data:/usr/share/elasticsearch/data
+  #   ports:
+  #     - "127.0.0.1:9200:9200"
+
+  # cleanarchcqrsmediatorapi.kibana:
+  #   image: docker.elastic.co/kibana/kibana:8.14.3
+  #   environment:
+  #     - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+  #     - ELASTICSEARCH_USERNAME=kibana_system
+  #     - ELASTICSEARCH_PASSWORD=Strong_password123!
+  #     - xpack.security.enabled=false
+  #     - xpack.license.self_generated.type=basic
+  #   networks:
+  #     - cleanarchcqrsmediatorapi-net
+  #   ports:
+  #     - "127.0.0.1:5601:5601"
+  #   depends_on:
+  #     cleanarchcqrsmediatorapi.elasticsearch:
+  #       condition: service_started
+
+  # cleanarchcqrsmediatorapi.redis:
+  #   image: redis:latest
+  #   ports:
+  #     - "6379:6379"
+
+  cleanarchcqrsmediatorapi.api:
+    # image: ${DOCKER_REGISTRY-}CleanArchCQRSMediatorAPIapi
+    build:
+      context: .
+      dockerfile: API/Dockerfile
+    # depends_on:
+    #   cleanarchcqrsmediatorapi.elasticsearch:
+    #     condition: service_healthy
+    ports:
+      - "8080:8080"
+      - "8081:8081"
     networks:
-      - CleanArchCQRSMediatorAPI-net
+      - cleanarchcqrsmediatorapi-net
+
+  cleanarchcqrsmediatorapi.postgres:
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: cleanarchcqrsmediatorapi
+    ports:
+      - "5432:5432"
     volumes:
-      - CleanArchCQRSMediatorAPI.elasticsearch_data:/usr/share/elasticsearch/data
-    ports:
-      - "127.0.0.1:9200:9200"
-
-  CleanArchCQRSMediatorAPI.kibana:
-    image: docker.elastic.co/kibana/kibana:8.14.3
-    environment:
-      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
-      - ELASTICSEARCH_USERNAME=kibana_system
-      - ELASTICSEARCH_PASSWORD=Strong_password123!
-      - xpack.security.enabled=false
-      - xpack.license.self_generated.type=basic
+      - cleanarchcqrsmediatorapi.postgres:/var/lib/postgresql/data
     networks:
-      - CleanArchCQRSMediatorAPI-net
-    ports:
-      - "127.0.0.1:5601:5601"
-    depends_on:
-      CleanArchCQRSMediatorAPI.elasticsearch:
-        condition: service_started
+      - cleanarchcqrsmediatorapi-net
 
-  CleanArchCQRSMediatorAPI.redis:
-    image: redis:latest
+  skeleton.pgadmin:
+    image: dpage/pgadmin4
     ports:
-      - "6379:6379"
+      - "5051:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@pgadmin.org
+      PGADMIN_DEFAULT_PASSWORD: admin
+    volumes:
+      - cleanarchcqrsmediatorapi.pgadmin4:/var/lib/pgadmin
+    restart: unless-stopped
+    networks:
+      - cleanarchcqrsmediatorapi-net
 
 networks:
-  CleanArchCQRSMediatorAPI-net:
+  cleanarchcqrsmediatorapi-net:
     driver: bridge
 
 volumes:
-  CleanArchCQRSMediatorAPI.elasticsearch_data:
-    driver: local
+  # cleanarchcqrsmediatorapi.elasticsearch_data:
+  cleanarchcqrsmediatorapi.postgres:
+  cleanarchcqrsmediatorapi.pgadmin4:

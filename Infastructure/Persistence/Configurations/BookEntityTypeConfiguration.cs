@@ -14,6 +14,7 @@ namespace CleanArchCQRSMediatorAPI.Persistence.Configurations
         {
             builder.ToTable("Book");
             builder.HasKey(book => book.Id);
+            builder.Property(m => m.Id).HasDefaultValueSql("gen_random_uuid()");
             builder.Property(b => b.BorrowedMemberId).IsRequired(false);
             builder.Ignore(b => b.BorrowedMember);
             builder.HasOne(b => b.BorrowedMember).WithMany(m => m.BorrowedBooks).HasForeignKey(b => b.BorrowedMemberId).OnDelete(DeleteBehavior.Cascade);
@@ -21,8 +22,8 @@ namespace CleanArchCQRSMediatorAPI.Persistence.Configurations
             builder.Property(b => b.Title).HasMaxLength(256).IsRequired();
             builder.Property(b => b.PublicationYear).IsRequired();
             builder.Property(b => b.IsAvailable).HasDefaultValue(true);
-            builder.Property<DateTime>("CreatedAt");
-            builder.Property<DateTime>("UpdatedAt");
+            builder.Property<DateTime>("CreatedAt").HasDefaultValueSql("NOW()");
+            builder.Property<DateTime>("UpdatedAt").HasDefaultValueSql("NOW()").ValueGeneratedOnAddOrUpdate();
         }
     }
 }

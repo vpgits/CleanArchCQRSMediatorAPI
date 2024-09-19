@@ -9,6 +9,8 @@ namespace CleanArchCQRSMediatorAPI.API.Extensions
     using Elastic.Ingest.Elasticsearch;
     using Elastic.Ingest.Elasticsearch.DataStreams;
     using Elastic.Serilog.Sinks;
+    using Microsoft.ApplicationInsights.Extensibility;
+
     using Serilog;
     using Serilog.Formatting.Elasticsearch;
 
@@ -45,7 +47,7 @@ namespace CleanArchCQRSMediatorAPI.API.Extensions
 
                     // application insights
 
-                    // configuration.WriteTo.ApplicationInsights(services.GetRequiredService<TelemetryConfiguration>(), TelemetryConverter.Traces);
+                    configuration.WriteTo.ApplicationInsights(services.GetRequiredService<TelemetryConfiguration>(), TelemetryConverter.Traces);
                 }
                 // else
                 // {

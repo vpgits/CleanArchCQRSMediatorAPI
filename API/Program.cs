@@ -11,7 +11,6 @@ using CleanArchCQRSMediatorAPI.Identity.Extensions;
 using CleanArchCQRSMediatorAPI.Persistence;
 using CleanArchCQRSMediatorAPI.Persistence.Extensions;
 using CleanArchCQRSMediatorAPI.Utility;
-using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.OpenApi.Models;
 using Serilog;
@@ -55,11 +54,11 @@ builder.Services.AddSingleton<IExceptionHandler, GlobalExceptionHander>();
 builder.Services.ConfigurePersistenceService(configuration);
 builder.Services.ConfigureApplicationServices();
 builder.Services.ConfigureUtilityServices(configuration);
-builder.Services.RegisterIdentityService(configuration);
+// builder.Services.RegisterIdentityService(configuration);
 builder.Host.RegisterSerilogLogging(configuration);
 
-// builder.Services.AddApplicationInsightsTelemetry();
-// builder.Services.AddOpenTelemetry().UseAzureMonitor();
+builder.Services.AddApplicationInsightsTelemetry();
+builder.Services.AddOpenTelemetry().UseAzureMonitor();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -70,11 +69,11 @@ if (app.Environment.IsDevelopment())
     app.UseDeveloperExceptionPage();
 }
 
-app.MigrateAuthDbContext();
-app.MigrateLibraryDbContext();
+// app.MigrateAuthDbContext();
+// app.MigrateLibraryDbContext();
 
-app.UseAuthentication();
-app.UseAuthorization();
+// app.UseAuthentication();
+// app.UseAuthorization();
 
 app.UseSerilogRequestLogging();
 

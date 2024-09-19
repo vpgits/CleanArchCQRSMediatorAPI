@@ -33,98 +33,101 @@ namespace CleanArchCQRSMediatorAPI.Identity.Services
 
         public async Task<Result> LoginMember(string username, string password)
         {
-            List<Error> errors =[];
-            if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(username))
-            {
-                return Result.Failure(new Error("400", "Username or Password is empty"));
-            }
+            // List<Error> errors =[];
+            // if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(username))
+            // {
+            //     return Result.Failure(new Error("400", "Username or Password is empty"));
+            // }
 
-            var user = await this.userManager.FindByNameAsync(username);
-            if (user == null)
-            {
-                return Result.Failure(new Error("400", "User not found"));
-            }
+            // var user = await this.userManager.FindByNameAsync(username);
+            // if (user == null)
+            // {
+            //     return Result.Failure(new Error("400", "User not found"));
+            // }
 
-            if (!await this.userManager.CheckPasswordAsync(user, password!))
-            {
-                return Result.Failure(new Error("401", "Incorrect password"));
-            }
+            // if (!await this.userManager.CheckPasswordAsync(user, password!))
+            // {
+            //     return Result.Failure(new Error("401", "Incorrect password"));
+            // }
 
-            var claims = new[]
-            {
-                new Claim(JwtRegisteredClaimNames.Sub, user.UserName!) !,
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new Claim(ClaimTypes.Name, user.UserName!),
-            };
+            // var claims = new[]
+            // {
+            //     new Claim(JwtRegisteredClaimNames.Sub, user.UserName!) !,
+            //     new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+            //     new Claim(ClaimTypes.Name, user.UserName!),
+            // };
 
-            var roles = await this.userManager.GetRolesAsync(user);
-            foreach (var role in roles)
-            {
-                claims = claims.Concat(new[] { new Claim(ClaimTypes.Role, role) }).ToArray();
-            }
+            // var roles = await this.userManager.GetRolesAsync(user);
+            // foreach (var role in roles)
+            // {
+            //     claims = claims.Concat(new[] { new Claim(ClaimTypes.Role, role) }).ToArray();
+            // }
 
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(this.configuration["Jwt:Key"] !));
-            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+            // var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(this.configuration["Jwt:Key"] !));
+            // var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
-            var token = new JwtSecurityToken(
-                       issuer: this.configuration["Jwt:Issuer"],
-                       audience: this.configuration["Jwt:Audience"],
-                       claims: claims,
-                       expires: DateTime.Now.AddMinutes(30),
-                       signingCredentials: creds);
-            var tokenString = new JwtSecurityTokenHandler().WriteToken(token);
-            return Result.Success(new { Token = tokenString, Expiration = token.ValidTo });
+            // var token = new JwtSecurityToken(
+            //            issuer: this.configuration["Jwt:Issuer"],
+            //            audience: this.configuration["Jwt:Audience"],
+            //            claims: claims,
+            //            expires: DateTime.Now.AddMinutes(30),
+            //            signingCredentials: creds);
+            // var tokenString = new JwtSecurityTokenHandler().WriteToken(token);
+            // return Result.Success(new { Token = tokenString, Expiration = token.ValidTo });
+            return Result.Success();
         }
 
         public async Task<Result> RegisterLibraryMember(string username, string password)
         {
-            var user = new IdentityUser { UserName = username };
-            var result = await this.userManager.CreateAsync(user, password);
-            var role = AuthorizationConstants.AuthorizationRoles.LibraryMember;
-            if (result.Succeeded)
-            {
-                if (!string.IsNullOrEmpty(role))
-                {
-                    var roleExists = await this.roleManager.RoleExistsAsync(role);
-                    if (!roleExists)
-                    {
-                        await this.roleManager.CreateAsync(new IdentityRole(role));
-                    }
+            // var user = new IdentityUser { UserName = username };
+            // var result = await this.userManager.CreateAsync(user, password);
+            // var role = AuthorizationConstants.AuthorizationRoles.LibraryMember;
+            // if (result.Succeeded)
+            // {
+            //     if (!string.IsNullOrEmpty(role))
+            //     {
+            //         var roleExists = await this.roleManager.RoleExistsAsync(role);
+            //         if (!roleExists)
+            //         {
+            //             await this.roleManager.CreateAsync(new IdentityRole(role));
+            //         }
 
-                    await this.userManager.AddToRoleAsync(user, role);
-                    return Result.Success();
-                }
-                else
-                {
-                    return Result.Failure(new Error("500", "Roles are empty"));
-                }
-            }
-            else
-            {
-                return Result.Failure(new Error("400", string.Join(" ", result.Errors.Select(error => error.Description))));
-            }
+            //         await this.userManager.AddToRoleAsync(user, role);
+            //         return Result.Success();
+            //     }
+            //     else
+            //     {
+            //         return Result.Failure(new Error("500", "Roles are empty"));
+            //     }
+            // }
+            // else
+            // {
+            //     return Result.Failure(new Error("400", string.Join(" ", result.Errors.Select(error => error.Description))));
+            // }
+            return Result.Success();
         }
 
         public async Task<Result> RegisterStaffMember(string username, string password, StaffMemberType staffRole)
         {
-            var user = new IdentityUser { UserName = username };
-            var result = await this.userManager.CreateAsync(user, password!);
-            var role = staffRole == StaffMemberType.MANAGEMENT ? AuthorizationConstants.AuthorizationRoles.ManagementStaff : AuthorizationConstants.AuthorizationRoles.MinorStaff;
-            if (result.Succeeded)
-            {
-                if (!string.IsNullOrEmpty(role))
-                {
-                    var roleExists = await this.roleManager.RoleExistsAsync(role);
-                    if (!roleExists)
-                    {
-                        await this.roleManager.CreateAsync(new IdentityRole(role));
-                    }
+            // var user = new IdentityUser { UserName = username };
+            // var result = await this.userManager.CreateAsync(user, password!);
+            // var role = staffRole == StaffMemberType.MANAGEMENT ? AuthorizationConstants.AuthorizationRoles.ManagementStaff : AuthorizationConstants.AuthorizationRoles.MinorStaff;
+            // if (result.Succeeded)
+            // {
+            //     if (!string.IsNullOrEmpty(role))
+            //     {
+            //         var roleExists = await this.roleManager.RoleExistsAsync(role);
+            //         if (!roleExists)
+            //         {
+            //             await this.roleManager.CreateAsync(new IdentityRole(role));
+            //         }
 
-                    await this.userManager.AddToRoleAsync(user, role);
-                }
-            }
+            //         await this.userManager.AddToRoleAsync(user, role);
+            //     }
+            // }
 
-            return Result.Failure(new Error("400", string.Join(" ", result.Errors.Select(error => error.Description))));
+            // return Result.Failure(new Error("400", string.Join(" ", result.Errors.Select(error => error.Description))));
+            return Result.Success();
         }
     }
 }

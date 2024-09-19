@@ -8,7 +8,7 @@ namespace CleanArchCQRSMediatorAPI.Persistence.Context
     using CleanArchCQRSMediatorAPI.Persistence.Configurations;
     using Microsoft.EntityFrameworkCore;
 
-    internal class LibraryDbContext : DbContext
+    public class LibraryDbContext : DbContext
     {
         public LibraryDbContext(DbContextOptions<LibraryDbContext> options)
             : base(options)
